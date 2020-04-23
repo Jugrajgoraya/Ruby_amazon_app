@@ -1,0 +1,17 @@
+<h1>Products Index Page</h1>
+
+<div class='row'>
+  <div class='col-2'>
+  </div>
+
+  <div class='col-10'>
+    <% @products.each do |proc| %>
+    <%# if you pass a instance to link_to it will create the href='/questions/:id' %>
+      <%= link_to proc do %>
+        <li class='list-group-item'>
+          <p><%= proc.id %> <%= proc.title %></p>
+        </li>
+      <% end %>
+    <% end %>
+  </div>
+</div>
