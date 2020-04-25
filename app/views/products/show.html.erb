@@ -25,3 +25,57 @@
     %>
   </div>
 </div>
+
+<%= form_for [@product, @review] do |f| %>
+  <% if @review.errors.full_messages.each do |msg| %>
+    <ul>
+      <li class="text-danger"><%= msg %></li>
+    </ul>
+    <% end %>
+  <% end %>
+  <div class="form-group">
+    <label class ="form_control"> <span>Rate Us</span></label>
+    <%= f.text_field(
+        :rating,
+        cols: 20,
+        rows: 5,
+        placeholder: "give us a rating",
+        class: "form-control"
+    )%>
+    <br>
+    <label class ="form_control"> <span>Comment</span></label>
+    <%= f.text_area(
+      :body,
+      cols: 50,
+      rows: 5,
+      placeholder: "What are you thoughts?",
+      class: "form-control"
+    ) %>
+  </div>
+  <%= f.submit "Submit Review", class: "btn-primary" %>
+<% end %>
+
+<ul class="list-group answer-list">
+  <% @reviews.each do |review| %>
+    <li class="list-group-item">
+      <p>
+        <%= review.rating %> <%= review.body %><br />
+        <small>
+          <%= link_to(
+            "Delete",
+            product_review_path(@product, review),
+            method: :delete, 
+            data: {
+              confirm: "Are you sure?"
+            },
+            class: 'btn btn-danger btn-sm',
+          ) %>
+        </small>
+        |
+        <small>
+        Reviewed <%= time_ago_in_words(review.created_at) %>
+        </small>
+      </p>
+    </li>
+  <% end %>
+</ul>
