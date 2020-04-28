@@ -1,9 +1,12 @@
 class ReviewsController < ApplicationController
 
+    before_action :authenticate_user!, except: [:index, :show]
+
     def create 
         @product = Product.find(params.require(:product_id))
         @review = Review.new review_params
 
+        @review.user = @current_user
         @review.product = @product
         if @review.save 
             

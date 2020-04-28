@@ -1,5 +1,7 @@
 class Product < ApplicationRecord
 
+    belongs_to :user
+
     has_many(:reviews, dependent: :destroy )
 
     validates(:title, presence: true, uniqueness: true)
@@ -16,7 +18,7 @@ class Product < ApplicationRecord
     # A callback method to set the default price to 1
     # A callback method to capitalize the product title before saving
 
-    before_validation(:set_default_price)
+    # before_validation(:set_default_price)
 
     # before_saving(:capitalize_the_title)
 

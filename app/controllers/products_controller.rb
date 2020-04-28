@@ -1,7 +1,9 @@
 class ProductsController < ApplicationController
 
+    before_action :authenticate_user!, except: [:index, :show]
+
     def index
-        @products = Product.all.order('id')
+        @products = Product.all.order('price')
     end
 
     def new
@@ -10,9 +12,10 @@ class ProductsController < ApplicationController
 
     def create
         # params.require(:question).permit(:title, :body) => tells rails to allow an object on the params that is called question. And on that question object allow the keys :title and :body
-        @product = Product.new(params.require(:product).permit(:title, :description))
+        @product = Product.new(params.require(:product).permit(:title, :description, :price))
+        @product.user = @current_user
         #tell active record to goahead and run the INSERT SQL query against our db. Returns true if it saves, returns false if it doesn't save
-        if @products.save
+        if @product.save
           redirect_to products_path
         else
           redirect_to new_product_path
@@ -22,7 +25,7 @@ class ProductsController < ApplicationController
     def show
         id = params[:id]
         @product = Product.find(id)
-
+        @product.user = @current_user
         @review = Review.new 
         # For the list of reviews
         @reviews = @product.reviews.order(created_at: :desc)
@@ -44,7 +47,7 @@ class ProductsController < ApplicationController
     def update
         id = params[:id]
         @product = Product.find(id)
-        if @product.update(params.require(:product).permit(:title, :description))
+        if @product.update(params.require(:product).permit(:title, :description, :price))
           redirect_to product_path(@product)
         else
           render :edit

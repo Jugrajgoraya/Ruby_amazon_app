@@ -3,9 +3,16 @@
     <span class='badge badge-pill badge-info'>
       <%= @product.id %>
     </span>
-    <%= @product.title %>
+    <%= @product.title %><br><br>
+    <span class="badge badge-secondary">
+      <%= @product.price%> $
+    </span>
   </h1>
   <p class='shadow-none p-3 mb-5 bg-light rounded'><%= @product.description %></p>
+  <small>
+        uploaded <%= time_ago_in_words(@product.created_at) %> by 
+
+  </small>
 
   <%# link_to arguments: name, path, options_object %>
   <div>
@@ -59,7 +66,7 @@
   <% @reviews.each do |review| %>
     <li class="list-group-item">
       <p>
-        <%= review.rating %> <%= review.body %><br />
+        <%= "⭐️"*review.rating %> <%= review.body %><br />
         <small>
           <%= link_to(
             "Delete",
@@ -73,7 +80,7 @@
         </small>
         |
         <small>
-        Reviewed <%= time_ago_in_words(review.created_at) %>
+        Reviewed <%= time_ago_in_words(review.created_at) %> by <%= review.user.first_name%> <%= product.user.goraya_name%>
         </small>
       </p>
     </li>
