@@ -2,6 +2,11 @@ class Product < ApplicationRecord
 
     belongs_to :user
 
+    has_many :taggings
+    has_many :tags, through: :taggings 
+
+    has_many(:favourites, dependent: :destroy)
+
     has_many(:reviews, dependent: :destroy )
 
     validates(:title, presence: true, uniqueness: true)
@@ -18,16 +23,16 @@ class Product < ApplicationRecord
     # A callback method to set the default price to 1
     # A callback method to capitalize the product title before saving
 
-    # before_validation(:set_default_price)
+    before_validation(:set_default_price)
 
-    # before_saving(:capitalize_the_title)
+    before_save(:capitalize_the_title)
 
     scope(:search, -> (query){ where("title ILIKE ? OR description ILIKE ?", "%#{query}%", "%#{query}%") })
 
     private
 
     def capitalize_the_title
-        title = title.capitalize
+        self.title.capitalize!
     end
 
     def set_default_price

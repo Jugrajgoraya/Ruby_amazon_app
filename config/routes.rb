@@ -7,9 +7,17 @@ Rails.application.routes.draw do
 
   resources :products do
 
-    resources :reviews, only: [ :create, :destroy]
+    resources :favourites, shallow: true, only: [ :create, :destroy ]
+
+    resources :reviews, shallow: true, only: [ :create, :destroy] do
+
+      resources :likes, only: [:create, :destroy]
+      
+    end
 
   end
+
+  get("/admin/panel", to: "welcome#admin_panel", as: :admin_panel)
 
   get("/home", to: "welcome#home")
 

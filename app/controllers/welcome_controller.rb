@@ -4,7 +4,7 @@ class WelcomeController < ApplicationController
     end
 
     def home
-        render(plain: 'home page')
+
     end
 
     def about
@@ -16,6 +16,19 @@ class WelcomeController < ApplicationController
     end
     def process_contact
         
+    end
+
+    def admin_panel
+        if current_user.is_admin?
+            @products = Product.all
+            @reviews = Review.all
+            @users = User.all
+            
+            render :panel
+        else
+            flash[:warning] = "unauthorized"
+            redirect_to products_path
+        end
     end
 
 end

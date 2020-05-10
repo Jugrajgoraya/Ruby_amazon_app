@@ -9,12 +9,31 @@
     </span>
   </h1>
   <p class='shadow-none p-3 mb-5 bg-light rounded'><%= @product.description %></p>
-  <small>
-        uploaded <%= time_ago_in_words(@product.created_at) %> by 
-
-  </small>
+  <%if @product.user %>
+    <p class='text-muted'> by <span><%= @product.user.first_name %> <%= @product.user.last_name %></p>
+  <% end %>
 
   <%# link_to arguments: name, path, options_object %>
+  <% favourite = current_user.favourites.find_by_product_id(@product) %>
+  <% if favourite.present?%>
+    <%= link_to(
+      "❤️",
+      favourite_path(favourite),
+      method: :delete,
+      class: 'btn btn-lg'
+    )%> <-- click here to remove favourite
+  <% else %>
+    <%= link_to(
+      "🤍",
+      product_favourites_path(@product),
+      method: :post,
+      class: 'btn btn-lg'
+    )%>  <-- click here to add favourite
+  <% end %>
+<div>
+  <span class="star glyphicon glyphicon-star-empty"></span>
+</div>
+  <% if can? :crud, @product %>
   <div>
     <%= link_to(
       "Edit",
@@ -31,6 +50,7 @@
     )
     %>
   </div>
+  <% end %>
 </div>
 
 <%= form_for [@product, @review] do |f| %>
@@ -66,23 +86,45 @@
   <% @reviews.each do |review| %>
     <li class="list-group-item">
       <p>
-        <%= "⭐️"*review.rating %> <%= review.body %><br />
+        <%= "⭐"*review.rating %> <%= review.body %><br />
+        <% if can? :crud, review %>
         <small>
           <%= link_to(
             "Delete",
-            product_review_path(@product, review),
+            review_path(review),
             method: :delete, 
             data: {
               confirm: "Are you sure?"
             },
-            class: 'btn btn-danger btn-sm',
+            class: 'btn btn-danger btn-sm'
           ) %>
         </small>
         |
+        <% end %>
         <small>
-        Reviewed <%= time_ago_in_words(review.created_at) %> by <%= review.user.first_name%> <%= product.user.goraya_name%>
+          Reviewed <%= time_ago_in_words(review.created_at) %>ago By <%= review.user.first_name %> <%= review.user.last_name %>
         </small>
       </p>
+      <small>Liked by: <%= review.likes.count %></small>
+      <small>
+      <% like = current_user.likes.find_by_review_id(review) %>
+          <% if like.present? %>
+            <%= link_to(
+                "Unlike",
+                 like_path(like),
+                method: :delete
+              )
+            %>
+          <% else %>
+            <%= link_to(
+                "like",
+                review_likes_path(review),
+                method: :post, 
+                class: 'btn btn-process btn-sm'
+              ) 
+            %>
+          <% end %>
+      </small>
     </li>
   <% end %>
 </ul>

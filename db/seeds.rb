@@ -6,9 +6,13 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
-Product.delete_all
-NUM_PRODUCT = 1000
+Review.destroy_all
+Product.destroy_all
+Tag.destroy_all
+
+NUM_PRODUCT = 35
 NUM_USER = 10
+TAG_NUM = 7
 PASSWORD = 'supersecret'
 
 super_user = User.create(
@@ -18,14 +22,33 @@ super_user = User.create(
     password: PASSWORD
 )
 
+TAG_NUM.times do 
+    Tag.create({
+        name: Faker::Game.genre
+    })
+end
 
 NUM_PRODUCT.times do
-    created_at = Faker::Date.backward(days: 365 * 5)
-    Product.create(
-         title: Faker::Hacker.say_something_smart,
-         description: Faker::ChuckNorris.fact,
-         price: Faker::Number.number(digits: 2),#number_to_currency(@product.price) 
-         created_at: created_at,
-         updated_at: created_at
-     )
+    p = Product.create({
+        title: Faker::Hacker.noun,
+        description: Faker::Hacker.say_something_smart,
+        price: Faker::Commerce.price,
+        user_id: super_user.id
+    })
+    if p.valid?
+        rand(0..10).times.each do
+            Review.create(
+                rating: Faker::Number.between(from:1, to:5),
+                body: Faker::Hipster.paragraph,
+                product: p,
+                user_id: super_user.id
+            )
+        end
+    end
 end
+
+
+
+puts Cowsay.say("Generated #{Product.all.count} products", :frogs)
+puts Cowsay.say("Generated #{Review.all.count} reviews", :tux)
+puts Cowsay.say("Generated #{Tag.all.count} tags", :kitty)
