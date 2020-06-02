@@ -29,4 +29,13 @@ Rails.application.routes.draw do
 
   post("/process_contact", to: "welcome#process_contact" )
 
+
+  # /api/v1/
+  namespace :api, defaults: { format: :json } do
+    namespace :v1 do
+      resources :products, only: [:index, :show, :create, :update, :destroy]
+      resource :session, only: [:create, :destroy]
+    end
+  end
+
 end

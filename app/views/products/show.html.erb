@@ -30,9 +30,8 @@
       class: 'btn btn-lg'
     )%>  <-- click here to add favourite
   <% end %>
-<div>
-  <span class="star glyphicon glyphicon-star-empty"></span>
 </div>
+<div>
   <% if can? :crud, @product %>
   <div>
     <%= link_to(
